@@ -1,0 +1,15 @@
+{
+  "name": "google-contacts-poc",
+  "version": "1.0.0",
+  "description": "Proof of concept for Google Contacts integration",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "googleapis": "^118.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+} 
