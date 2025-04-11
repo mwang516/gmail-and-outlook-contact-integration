@@ -2,4 +2,5 @@ Flask>=2.0
 google-api-python-client
 google-auth-oauthlib>=0.5
 requests>=2.0
-msal>=1.0 
+msal>=1.0
+python-dotenv 

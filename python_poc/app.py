@@ -1,5 +1,6 @@
 import os
 import json
+from dotenv import load_dotenv
 
 from flask import Flask, redirect, request, session, url_for, jsonify
 from google_auth_oauthlib.flow import Flow
@@ -8,21 +9,27 @@ from googleapiclient.discovery import build
 import msal
 import requests
 
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', os.urandom(24))
 
 # Google Config
-GOOGLE_CLIENT_ID = '190218594767-o4v1omdt3apbnljmf881aeln58kvkq0e.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = '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'
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 GOOGLE_REDIRECT_URI = 'http://localhost:5001/callback/google'
 GOOGLE_SCOPES = ['https://www.googleapis.com/auth/contacts.readonly', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 
 # Outlook Config
-OUTLOOK_CLIENT_ID = '38a05689-1aad-4bbe-9f7f-02e843a7c207'
-OUTLOOK_CLIENT_SECRET = 'BqI8Q~uAtvoudCQl14eHBJkfe-a3jtZrUuZbwb.P'
+OUTLOOK_CLIENT_ID = os.getenv('OUTLOOK_CLIENT_ID')
+OUTLOOK_CLIENT_SECRET = os.getenv('OUTLOOK_CLIENT_SECRET')
 OUTLOOK_REDIRECT_URI = 'http://localhost:5001/callback/outlook'
 OUTLOOK_SCOPES = ['https://graph.microsoft.com/Contacts.Read', 'User.Read']
 OUTLOOK_AUTHORITY = 'https://login.microsoftonline.com/common'
+
+# Check if essential config is loaded
+if not all([GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, OUTLOOK_CLIENT_ID, OUTLOOK_CLIENT_SECRET]):
+    raise ValueError("Essential OAuth client configuration missing. Check .env file.")
 
 # Google Helper Function
 def _fetch_google_contacts_data(credentials):
